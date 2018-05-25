@@ -7,8 +7,8 @@
 ## add new test
 - cd src
 - cp -r template newtest
-- edit config.ini (suite=['template.test', 'newtest.test'])
-- edit CONFIG\_PATH in newtest/test.py (CONFIG\_PATH=os.path.abspath('newtest/config.ini')
+- edit src/config.ini (suite=['template.test', 'newtest.test'])
+- edit newtest/test.py (CONFIG\_PATH=os.path.abspath('newtest/config.ini')
 
 ## run all tests
 - close all minicom connections
