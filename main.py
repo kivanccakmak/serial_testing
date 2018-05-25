@@ -33,8 +33,7 @@ def run_all(test_suit):
     for modname in test_suit:
         mod = sys.modules[modname]
         config = mod.__dict__['get_config']()
-        print(config)
-        mod.__dict__['get_config']()
+        mod.__dict__['run'](config)
 
 def main():
     """

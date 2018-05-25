@@ -10,6 +10,7 @@ from common import get_slave_names, get_config
 def get_config():
     """
     :return: dict
+        None in fail
     """
     section = ['test', 'timeouts', 'gw']
     slave_names = get_slave_names("config.ini")
