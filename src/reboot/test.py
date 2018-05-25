@@ -25,9 +25,9 @@ def run(config):
         False on fail, True on positive
     """
     gw, slaves = initialize(config, slave_names)
-    return rm_req_test(gw, slaves, config)
+    return reboot_test(gw, slaves, config)
 
-def rm_req_test(gw, slaves, config):
+def reboot_test(gw, slaves, config):
     """
     :gw: MySerial
     :slaves: MySerial[]

@@ -3,12 +3,32 @@ import sys
 import ast
 from common.common import get_config
 
-# TODO: read this from config file
 def get_test_suit():
     """
+    :return: String[]
+        None on fail
     """
     config =  get_config('config.ini', ['test'])
-    return ast.literal_eval(config['test']['suite'])
+    if config == None:
+        print('failed to get config')
+        return None
+
+    if 'test' not in config.keys():
+        print('invalid config file format [no test field]')
+        return None
+
+    if 'suite' not in config['test'].keys():
+        print('invalid config file format [no suite field]')
+        return None
+
+    try:
+        suit = ast.literal_eval(config['test']['suite'])
+    except TypeError as e:
+        print('failed to load suite')
+        print('error message: {}'.format(e))
+        return None
+
+    return suit
 
 def load_test_suit(test_suit):
     """
@@ -39,10 +59,15 @@ def run_all(test_suit):
 def main():
     """
     """
+    if not os.path.isfile('config.ini'):
+        print('can not found config.ini')
+        sys.exit(1)
+
     modnames = get_test_suit()
     if not load_test_suit(modnames):
         print('failed to load test_suit: {}'.format(modnames))
         sys.exit(1)
+
     run_all(modnames)
 
 if __name__ == "__main__":
