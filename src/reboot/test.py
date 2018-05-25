@@ -7,6 +7,9 @@ import pyping
 from myserial import MySerial
 from common import get_slave_names, get_config
 
+CONFIG_PATH=os.path.abspath('reboot/config.ini')
+
+# API functions
 def read_config():
     """
     :return: dict
@@ -27,6 +30,7 @@ def run(config):
     gw, slaves = initialize(config, slave_names)
     return reboot_test(gw, slaves, config)
 
+# Private functions
 def reboot_test(gw, slaves, config):
     """
     :gw: MySerial
