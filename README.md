@@ -5,8 +5,10 @@
 - sudo ./install.sh
 
 ## configuration
+- cd src
 - edit config.ini
 
 ## run
 - close all minicom connections
-- sudo python rm\_test.py
+- cd src
+- sudo python main.py
