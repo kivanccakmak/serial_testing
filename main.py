@@ -1,10 +1,13 @@
 import sys
+import ast
+from common.common import get_config
 
 # TODO: read this from config file
 def get_test_suit():
     """
     """
-    return ['test1.test1', 'test2.test2']
+    config =  get_config('config.ini', ['test'])
+    return ast.literal_eval(config['test']['suite'])
 
 def load_test_suit(test_suit):
     """

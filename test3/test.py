@@ -7,23 +7,32 @@ import pyping
 from myserial import MySerial
 from common import get_slave_names, get_config
 
-def main(conf_file, slave_names):
+def get_config():
     """
-    :conf_file: String
-    :slave_names: String[]
-        [new0, new1]
+    :return: dict
     """
     section = ['test', 'timeouts', 'gw']
+    slave_names = get_slave_names("config.ini")
     section += slave_names
-    config = get_config(conf_file, section)
+    config = get_config("config.ini", section)
+    return config
+
+def run(config):
+    """
+    :config: dict
+    :return: Bool
+        False on fail, True on positive
+    """
     gw, slaves = initialize(config, slave_names)
-    rm_req_test(gw, slaves, config)
+    return rm_req_test(gw, slaves, config)
 
 def rm_req_test(gw, slaves, config):
     """
     :gw: MySerial
     :slaves: MySerial[]
     :config: dict
+    :return: Bool
+        False on fail, True on positive
     """
     restart(slaves, "reboot")
     print("sleep({})".format(config['timeouts']['init']))
@@ -34,6 +43,7 @@ def rm_req_test(gw, slaves, config):
             print("success")
         else:
             print("fail")
+            return False
 
         for slave in slaves:
             if can_ping_node(slave.fields['ip']):
@@ -43,6 +53,7 @@ def rm_req_test(gw, slaves, config):
         restart(slaves, "reboot")
         print("sleep({})".format(config['timeouts']['reboot']))
         time.sleep(int(config['timeouts']['reboot']))
+    return True
 
 def can_ping_node(ip_addr):
     """
@@ -105,10 +116,3 @@ def initialize(config, slave_names):
         time.sleep(1)
 
     return gw, slaves
-
-if __name__ == "__main__":
-    if not os.path.isfile("config.ini"):
-        print("config file not found")
-        sys.exit(1)
-    slave_names = get_slave_names("config.ini")
-    main("config.ini", slave_names)
