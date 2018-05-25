@@ -1,6 +1,6 @@
 import os
 
-def get_config():
+def read_config():
     """
     :return: dict
         None in fail

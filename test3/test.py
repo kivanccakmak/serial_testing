@@ -7,7 +7,7 @@ import pyping
 from myserial import MySerial
 from common import get_slave_names, get_config
 
-def get_config():
+def read_config():
     """
     :return: dict
         None in fail

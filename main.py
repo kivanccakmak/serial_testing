@@ -1,3 +1,4 @@
+import os
 import sys
 import ast
 from common.common import get_config
@@ -32,7 +33,7 @@ def run_all(test_suit):
     print('running all')
     for modname in test_suit:
         mod = sys.modules[modname]
-        config = mod.__dict__['get_config']()
+        config = mod.__dict__['read_config']()
         mod.__dict__['run'](config)
 
 def main():
@@ -45,4 +46,5 @@ def main():
     run_all(modnames)
 
 if __name__ == "__main__":
+    sys.path.append(os.path.abspath('common'))
     main()

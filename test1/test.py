@@ -1,11 +1,21 @@
 import os
+import sys
+from common.common import get_config
+from common.common import get_slave_names
 
-def get_config():
+CONFIG_PATH=os.path.abspath('test1/config.ini')
+
+def read_config():
     """
     :return: dict
         None in fail
     """
-    return {'a':'1', 'b':'2'}
+    global CONFIG_PATH
+    section = ['test', 'timeouts', 'gw']
+    slave_names = get_slave_names(CONFIG_PATH)
+    section += slave_names
+    config = get_config(CONFIG_PATH, section)
+    return config
 
 def run(config):
     """
