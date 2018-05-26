@@ -3,12 +3,18 @@ import sys
 import ast
 from common.common import get_config
 
-def get_test_suit():
+CONFIG_FILE = 'config.ini'
+EXIT_CODES = {'CONFIG_READ_ERROR': 2, 'MODULE_LOAD_ERROR': 3, 
+        'FAILED_TEST': 1, 'SUCCESS': 0}
+
+def get_test_suit(conf_file):
     """
-    :return: String[]
+    :conf_file: Str
+    :return: Str[]
+        list of modules to run in config file on success
         None on fail
     """
-    config =  get_config('config.ini', ['test'])
+    config =  get_config(conf_file, ['test'])
     if config == None:
         print('failed to get config')
         return None
@@ -33,6 +39,7 @@ def get_test_suit():
 def load_test_suit(test_suit):
     """
     :test_suit: Str[]
+        list of modules to run
     :return: Bool
         False if any load operation fails
     """
@@ -49,26 +56,39 @@ def load_test_suit(test_suit):
 def run_all(test_suit):
     """
     :test_suit: String[]
+    :return: Bool
+        False if any test case fail
     """
     print('running all')
     for modname in test_suit:
         mod = sys.modules[modname]
+
         config = mod.__dict__['read_config']()
-        mod.__dict__['run'](config)
+        if config is None:
+            print('no config found for {}'.format(modname))
+            return False
+
+        if not mod.__dict__['run'](config):
+            print('failed test')
+            return False
+    return True
 
 def main():
     """
     """
-    if not os.path.isfile('config.ini'):
-        print('can not found config.ini')
-        sys.exit(1)
+    if not os.path.isfile(CONFIG_FILE):
+        print('can not found {}'.format(CONFIG_FILE))
+        sys.exit(EXIT_CODES['CONFIG_READ_ERROR'])
 
-    modnames = get_test_suit()
+    modnames = get_test_suit(CONFIG_FILE)
     if not load_test_suit(modnames):
         print('failed to load test_suit: {}'.format(modnames))
-        sys.exit(1)
+        sys.exit(EXIT_CODES['MODULE_LOAD_ERROR'])
 
-    run_all(modnames)
+    if not run_all(modnames):
+        sys.exit(EXIT_CODES['FAILED_TEST'])
+
+    sys.exit(EXIT_CODES['SUCCESS'])
 
 if __name__ == "__main__":
     sys.path.append(os.path.abspath('common'))

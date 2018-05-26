@@ -3,7 +3,8 @@ import sys
 from common.common import get_config
 from common.common import get_slave_names
 
-CONFIG_PATH=os.path.abspath('template/config.ini')
+RELATIVE_PATH='template/config.ini'
+CONFIG_PATH=os.path.abspath(RELATIVE_PATH)
 
 # API functions
 def read_config():
@@ -11,7 +12,15 @@ def read_config():
     :return: dict
         None in fail
     """
-    config = get_config(CONFIG_PATH, ['parameters'])
+    try:
+        config = get_config(CONFIG_PATH, ['parameters'])
+    except:
+        print('failed to parse {}'.format(CONFIG_PATH))
+        return None
+
+    if config is None:
+        print('failed to read {}'.format(CONFIG_PATH))
+        return None
     return config
 
 def run(config):

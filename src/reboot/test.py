@@ -7,7 +7,8 @@ import pyping
 from myserial import MySerial
 from common import get_slave_names, get_config
 
-CONFIG_PATH=os.path.abspath('reboot/config.ini')
+RELATIVE_PATH='reboot/config.ini'
+CONFIG_PATH=os.path.abspath(RELATIVE_PATH)
 
 # API functions
 def read_config():
@@ -16,9 +17,18 @@ def read_config():
         None in fail
     """
     section = ['test', 'timeouts', 'gw']
+
     slave_names = get_slave_names("config.ini")
+    if slave_names is None:
+        print('failed to get slave names')
+        return None
     section += slave_names
-    config = get_config("config.ini", section)
+
+    config = get_config(CONFIG_PATH, section)
+    if config is None:
+        print('failed to read {}'.format(CONFIG_PATH))
+        return None
+
     return config
 
 def run(config):
