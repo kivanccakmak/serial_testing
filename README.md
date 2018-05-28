@@ -10,7 +10,7 @@ A simple test suite runner script, that executes newly added test scripts into n
 * `cd src`
 * `cp -r template newtest`
 * `edit src/config.ini (suite=['template.test', 'newtest.test'])`
-* `edit newtest/test.py (RELATIVE\_PATH='newtest/config.ini')`
+* `edit newtest/test.py (RELATIVE_PATH='newtest/config.ini')`
 
 ## run all tests
 * `close all minicom connections`
