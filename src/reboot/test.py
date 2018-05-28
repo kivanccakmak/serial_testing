@@ -1,11 +1,16 @@
 #!/usr/bin/python
+"""
+reboot all slave devices, then check whether can ping them
+"""
 import os
+import ast
 import sys
 import time
 import pyping
 
 from myserial import MySerial
-from common import get_slave_names, get_config
+from common.common import get_config
+from common.common import get_slave_names
 
 RELATIVE_PATH='reboot/config.ini'
 CONFIG_PATH=os.path.abspath(RELATIVE_PATH)
@@ -18,7 +23,7 @@ def read_config():
     """
     section = ['test', 'timeouts', 'gw']
 
-    slave_names = get_slave_names("config.ini")
+    slave_names = get_slave_names(CONFIG_PATH)
     if slave_names is None:
         print('failed to get slave names')
         return None
@@ -37,7 +42,7 @@ def run(config):
     :return: Bool
         False on fail, True on positive
     """
-    gw, slaves = initialize(config, slave_names)
+    gw, slaves = initialize(config)
     return reboot_test(gw, slaves, config)
 
 # Private functions
@@ -97,15 +102,14 @@ def restart(nodes, cmd):
     for node in nodes:
         node.exec_command(cmd)
 
-def initialize(config, slave_names):
+def initialize(config):
     """
     :config: dict
-    :slave_names: Str
-        [new0, new1, ...]
     :return: MySerial, MySerial[]
         gw, slaves[]
     """
     gw, slaves = None, []
+    slave_names = ast.literal_eval(config['test']['slaves'])
 
     gw = MySerial(
             config['gw']['tty'],
@@ -118,6 +122,7 @@ def initialize(config, slave_names):
     time.sleep(1)
 
     for name in slave_names:
+        print('name {}'.format(name))
         slaves.append(
             MySerial(
                 config[name]['tty'],
